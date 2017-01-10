@@ -89,11 +89,11 @@ service-worker: true
 # Friends
 friends: [
     {
-        title: "Su",
-        href: "http://su.gallery/"
+        title: "Tech Diary",
+        href: "http://joyeecheung.github.io/diary/"
     },{
-        title: "乱序",
-        href: "http://mida.re/"
+        title: "doyoudo",
+        href: "http://doyoudo.com/"
     },{
         title: "前端外刊评论",
         href: "http://qianduan.guru/"
