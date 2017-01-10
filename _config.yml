@@ -89,13 +89,31 @@ service-worker: true
 # Friends
 friends: [
     {
-        title: "doyoudo",
-        href: "http://doyoudo.com/"
+        title: "Su",
+        href: "http://su.gallery/"
     },{
-        title: "Tech Diary",
-        href: "http://joyeecheung.github.io/diary/"
+        title: "乱序",
+        href: "http://mida.re/"
     },{
-        title:"月报",
-        href: "http://www.kancloud.cn/jsfront/month"
+        title: "前端外刊评论",
+        href: "http://qianduan.guru/"
+    },{
+        title: "天镶的博客",
+        href: "http://lingyu.wang/"
+    },{
+        title: "Luke 的自留地",
+        href: "http://hmqk1995.github.io"
+    },{
+        title: "Ebn's Blog",
+        href: "http://ebnbin.com/"
+    },{
+        title: "SmdCn's Blog",
+        href: "http://blog.smdcn.net"
+    },{
+        title: "解旻的博客",
+        href: "http://xieminis.me/"
+    },{
+        title: "DHong Say",
+        href: "http://dhong.co"
     }
 ]
