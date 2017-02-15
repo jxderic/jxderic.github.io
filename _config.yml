@@ -25,7 +25,7 @@ facebook_username:  eric4336355
 highlighter: rouge
 permalink: pretty
 paginate: 10
-exclude: ["less","node_modules","Gruntfile.js","package.json","README.md","README.zh.md"]
+exclude: ["less","node_modules","Gruntfile.js","package.json","README.md"]
 anchorjs: no                          # if you want to customize anchor. check out line:181 of `post.html`
 
 
@@ -68,7 +68,7 @@ ga_domain: blog.jxderic.xyz
 # Sidebar settings
 sidebar: true                           # whether or not using Sidebar.
 sidebar-about-description: "我有点老，但我不是老油条"
-sidebar-avatar: img/side-eric.jpg      # use absolute URL, seeing it's used in both `/` and `/about/`
+sidebar-avatar: /img/side-eric.jpg      # use absolute URL, seeing it's used in both `/` and `/about/`
 
 
 
