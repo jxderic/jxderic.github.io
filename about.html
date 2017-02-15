@@ -17,42 +17,22 @@ header-img: "img/about-bg.jpg"
     <!--copied from markdown -->
     <blockquote><p>我有点老，但我不是老油条</p></blockquote>
 
-    <p>Hey，我是<strong>晓东</strong>，程序员 &amp; 运动男，发现自己适合的职业有点晚，但总归找到合适自己的方向了，梦想成为前端行业的大牛。</p>
+    <p>Hey，我是<strong>晓东</strong>，你可以叫我<strong>Eric</strong>，程序员 &amp; 运动男，发现自己适合的职业有点晚，但总归找到合适自己的方向了，梦想成为前端行业的大牛。</p>
 
     <p>一些作品和开源项目，👉 戳 <a href="http://github.com/jxderic">Github</a></p>
     
     <p>喜欢编程的感觉，喜欢运动，喜欢看书，最喜欢的是不断学习，不被OUT的感觉。爱生活，爱学习，爱分享，爱地球。或许这就是这样一个自由的场域，或慵懒，或随性，或调侃，接纳不同的声音，包容不同的姿态，却可以在某一时间凝聚成无坚不摧的力量。如果试图解释这种力量，那就是，遇见了，就不能视而不见。</p>
-    <h5>Talks</h5>
-
-    <ul>
-    <li><a href="//huangxuan.me/2016/11/20/sw-101-gdgdf/">Service Worker 101 · GDG DevFest 2016 北京</a></li>
-    <li><a href="//huangxuan.me/2016/10/20/pwa-qcon2016/">Progressive Web Apps，复兴序章 · QCon 上海 2016</a></li>
-    <li><a href="//huangxuan.me/2016/06/05/pwa-in-my-pov/">Progressive Web App 之我见 · 2016</a></li>
-    <li><a href="//huangxuan.me/2015/12/28/css-sucks-2015/">CSS Still Sucks 2015 · 2015</a></li>
-    <li><a href="//huangxuan.me/2015/07/09/js-module-7day/">JavaScript 模块化七日谈 · 2015</a></li>
-    </ul>
 </div>
 
 <!-- English Version -->
 <div class="en post-container">
-    <blockquote><p>Yet another Web Developer. <br>
-    Yet another Life-long Designer.</p></blockquote>
+    <blockquote><p>I am a bit old, but I am not an old fritters</p></blockquote>
 
-    <p>Hi, I am <strong>Huang Xuan(黄玄)</strong>，you can call me <strong>Hux</strong>. I'm an engineer &amp; a designer who loves to build software such as <a href="http://yanshuo.io">Yanshuo.io</a> and more (<a href="/portfolio">Portfolio 👉</a> and <a href="http://github.com/huxpro">Github 👉</a>). I studied Digital Media Art and graduated from <a href="https://en.wikipedia.org/wiki/Communication_University_of_China">Communication University of China</a> in 2016.</p>
+    <p>Hi, I am <strong>xiao dong(晓东)</strong>，you can call me <strong>Eric</strong>. I'm an engineer &amp; a designer who loves to build software such as <a href="http://yanshuo.io">Yanshuo.io</a> and more (<a href="/portfolio">Portfolio 👉</a> and <a href="http://github.com/huxpro">Github 👉</a>). I studied Digital Media Art and graduated from <a href="https://en.wikipedia.org/wiki/Communication_University_of_China">Communication University of China</a> in 2016.</p>
 
     <p>As an engineer, I worked at Wepiao (<a href="https://www.crunchbase.com/organization/wepiao#/entity">see CrunchBase</a>) as the dev lead of Front-End Infrastructure Team, and used to intern at <a href="https://www.alitrip.com/">Alibaba Trip</a> for one year. As a designer, I was offered to be the UI/UX Designer Intern of Alibaba, Microsoft etc.</p>
 
     <p>Moreover, I'm also a translator at <a href="http://www.gfansub.com/">GDG China Subtitle Team</a>, maintainer at <a href="http://zhuanlan.zhihu.com/FrontendMagazine">Frontend Magazine</a> and the owner of <a href="http://zhuanlan.zhihu.com/huxblog">Lifelong Romantic Geek</a>.</p>
-
-    <h5>Talks</h5>
-
-    <ul>
-    <li><a href="//huangxuan.me/2016/11/20/sw-101-gdgdf/">Service Worker 101, working offline and instant loading · GDG DevFest 2016 Beijing</a></li>
-    <li><a href="//huangxuan.me/2016/10/20/pwa-qcon2016/">Progressive Web Apps, make web great again · QCon Shanghai 2016</a></li>
-    <li><a href="//huangxuan.me/2016/06/05/pwa-in-my-pov/">Progressive Web App in my pov · 2016</a></li>
-    <li><a href="//huangxuan.me/2015/12/28/css-sucks-2015/">CSS Still Sucks 2015, and how we work around it · 2015</a></li>
-    <li><a href="//huangxuan.me/2015/07/09/js-module-7day/">JavaScript Modularization Journey · 2015</a></li>
-    </ul>
 </div>
 
 <!-- Handle Language Change -->
@@ -124,37 +104,11 @@ header-img: "img/about-bg.jpg"
     (function() {
         var ds = document.createElement('script');
         ds.type = 'text/javascript';ds.async = true;
-        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.unstable.js';
         ds.charset = 'UTF-8';
         (document.getElementsByTagName('head')[0]
          || document.getElementsByTagName('body')[0]).appendChild(ds);
     })();
 </script>
 <!-- 多说公共JS代码 end -->
-{% endif %}
-
-
-{% if site.disqus_username %}
-<!-- disqus 评论框 start -->
-<div class="comment">
-    <div id="disqus_thread" class="disqus-thread">
-
-    </div>
-</div>
-<!-- disqus 评论框 end -->
-
-<!-- disqus 公共JS代码 start (一个网页只需插入一次) -->
-<script type="text/javascript">
-    /* * * CONFIGURATION VARIABLES * * */
-    var disqus_shortname = "{{site.disqus_username}}";
-    var disqus_identifier = "{{site.disqus_username}}/{{page.url}}";
-    var disqus_url = "{{site.url}}{{page.url}}";
-
-    (function() {
-        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    })();
-</script>
-<!-- disqus 公共JS代码 end -->
 {% endif %}
