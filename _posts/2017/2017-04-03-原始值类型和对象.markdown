@@ -1,0 +1,73 @@
+---
+layout:     post
+title:      "原始类型值和对象"
+subtitle:   " "
+date:       2017-04-03
+author:     "Eric"
+header-img: "img/2017-plan.jpg"
+catalog: true
+tags:
+    - 原始类型值
+    - 对象
+---
+# 原始类型值和对象
+JavaScript定义了不同值之间的区别：
+
+* 原始值包括：boolean、number、string、null和undefined。
+* 一种复杂类型：对象。
+
+他们的主要区别是他们是如何被比较的，每一个对象有一个独一无二的标志，并且仅和自己相等:
+
+```
+> var obj1 = {};
+> var obj2 = {};
+> obj1 === obj2;
+  false
+> obj1 === obj1;
+  true;
+```
+相反，原始值只要编码值相等，就认为是相同的：
+
+```
+> prim1 = 123;
+> prim2 = 123;
+> prim1 === prim2;
+  true
+```
+## 原始类型值
+下面全是原始类型值：
+
+* 布尔值：false,true
+* 数字：2341，3.14
+* 字符串：'abc'，"abc"
+* 两个无值：null，undefined
+
+原始值得属性无法更改，无法添加和移除属性：
+
+```
+> var str = 'abc';
+> str.foo = 3;
+> str.foo
+  undefined
+```
+（获取未知属性总是返回undefined）
+
+注意的地方：
+
+* null，undefined，false，0，NaN和""都当作false
+* 可以用typeof value检测值类型，但null检查类型是object
+
+## 对象
+最常见的几种对象是：
+
+* 简单对象（类型是Object）可以通过对象字面量创建：
+
+`{name:"eric", work:"web developer"}`
+
+* 数组（类型是Array）能通过数组字面量创建：
+
+`['apple','orange','banana']`
+
+* 正则表达式（类型是RegExp）能通过正则表达式字面量创建：
+
+`/on/gi`
