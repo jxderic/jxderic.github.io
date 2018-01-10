@@ -2,7 +2,7 @@
 layout:     post
 title:      "vue项目结构搭建"
 subtitle:   "vue "
-date:       2017-01-08
+date:       2018-01-08
 author:     "Eric"
 header-img: "img/mac.jpg"
 catalog: true
