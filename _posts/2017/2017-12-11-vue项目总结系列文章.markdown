@@ -4,7 +4,7 @@ title:      "vue项目总结系列文章"
 subtitle:   "vue project summary"
 date:       2017-12-25
 author:     "Eric"
-header-img: "img/mac.ipg"
+header-img: "img/mac.jpg"
 catalog: true
 tags:
     - vue
