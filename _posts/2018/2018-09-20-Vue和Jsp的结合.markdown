@@ -1,0 +1,20 @@
+## 调试方式
+Vue+iframe的开发方式需要起两个工程服务（Vue、jsp），两个工程端口不一样，根据浏览器的同源策略，iframe会产生dom跨域，最麻烦的调试方法就是Vue打包到jsp里查看效果，但这种调试方式大大影响效率，因为开发的时候肯定会有各种问题，需要多次调试。
+查阅资料发现父页面和子页面中都设置document.domain可以解决iframe跨域问题。
+## 获取子页面的window
+获取子页面的window在Chrome和IE中有兼容问题，兼容的写法是：
+```
+let iframe = window.frames.mapFrame.contentWindow || window.frames.mapFrame;
+```
+顺序也不能变，因为Chrome两种写法都可以，但后者Chrome还不能获取到子页面window，调用子页面的方法会报错。
+
+顺便提一下，怎么判断本页面是否是顶级页面？
+```
+isInIframe() {
+    return !(window === top);
+  }
+```
+## 逻辑思路
+这种开发方式应该尽量把业务逻辑都写在Vue工程中，只有一些跟地图相关的写在jsp中，构建函数，并尽量写回调函数，在Vue中方便调用jsp中的函数且返回值。Vue传值给jsp可以通过定义全局变量或者利用iframe的src带参数，这样jsp中就能取到这些值。
+
+最后，打包的时候记得把这些document.domain都注释掉。
