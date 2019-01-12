@@ -2,7 +2,7 @@
 
 Vue的双向绑定最重要的原理就是通过[Object.defineProperty](https://blog.csdn.net/u011277123/article/details/58597638)把data对象的属性全部转为getter/setter。每个组件实例都有相应的watcher实例对象，它会在组件渲染的过程中把属性记录为依赖，之后当依赖的setter被调用时，会通知watcher重新计算，从而致使它关联的组件得以更新。
 
-Vue是异步执行DOM更新，观察到数据变化，Vue讲开启一个队列，并缓冲在同一个事件循环中发生的所有数据改变，在下一个的事件循环“Tick”中，Vue才更新DOM。
+Vue是异步执行DOM更新，观察到数据变化，Vue将开启一个队列，并缓冲在同一个事件循环中发生的所有数据改变，在下一个的事件循环“Tick”中，Vue才更新DOM。
 
 例如，当你设置 vm.someData = ‘new value’ ，该组件不会立即重新渲染。
 
