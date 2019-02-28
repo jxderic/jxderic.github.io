@@ -30,5 +30,19 @@ else { this.mySwiper.autoplay.stop(); // 少于4个停止轮播 }
 
 ```
 
+因为`$nextTick()`返回一个Promise对象，所以可以使用async/await完成相同的事情：
+
+```
+methods: {
+  updateMessage: async function () {
+    this.message = 'updated'
+    console.log(this.$el.textContent) // => '未更新'
+    await this.$nextTick()
+    console.log(this.$el.textContent) // => '已更新'
+  }
+}
+```
+
 **参考文章** 
+
 > [深入响应式原理](https://cn.vuejs.org/v2/guide/reactivity.html#search-query-sidebar) 
