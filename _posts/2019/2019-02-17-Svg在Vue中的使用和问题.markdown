@@ -2,15 +2,13 @@
 
 ## 前言
 
-想到这个主题是因为工作中遇到了icon使用的不便和前段时间改缺陷遇到的兼容性问题。
+想到这个主题是因为工作中icon使用的一些不便和前段时间改缺陷遇到的兼容性问题。
 
 ## icon的演进史
 
 ### 雪碧图
 
 刚开始大部分图标都是用 img 来实现的。渐渐发现一个页面的请求资源中图片 img 占了大部分，所以为了优化有了`image sprite` 就是所谓的雪碧图，就是将多个图片合成一个图片，然后利用 css 的 background-position 定位显示不同的 icon 图标。但这个也有一个很大的痛点，维护困难。每新增一个图标，都需要改动原始图片，还可能不小心出错影响到前面定位好的图片，久而久之你不知道该怎么维护了。
-
-![雪碧图](http://thyrsi.com/t6/671/1550395610x2890174375.png)
 
 ## font库
 
@@ -141,9 +139,9 @@ Vue.component('icon-svg', IconSvg)
 - 你不能保证你所有的 svg 都是用来当做 icon的，有些真的可能只是用来当做图片资源的。
 - 不能确保你使用的一些第三方类库会使用到 svg。
 
-所以最安全合理的做法是使用 webpack 的 [exclude](https://webpack.js.org/configuration/module/#rule-exclude) 和 [include](https://webpack.js.org/configuration/module/#rule-include) ，让`svg-sprite-loader`只处理你指定文件夹下面的 svg，`url-loaer`只处理除此文件夹之外的所以 svg，这样就完美解决了之前冲突的问题。
+所以最安全合理的做法是使用 webpack 的 [exclude](https://webpack.js.org/configuration/module/#rule-exclude) 和 [include](https://webpack.js.org/configuration/module/#rule-include) ，让`svg-sprite-loader`只处理你指定文件夹下面的 svg，`url-loaer`只处理除此文件夹之外的所有 svg，这样就完美解决了之前冲突的问题。
 
-这样配置好了，只要引入svg之后填写类名就可以了
+这样配置好了，只要引入svg之后填写类名就可以了，但我们使用不可能每用一个就引入一个，需要下面的自动导入来管理svg。
 
 ```
 import '@/src/icons/qq.svg; //引入图标
@@ -189,9 +187,9 @@ svgo -f 文件夹目录
 
 ## 遇到的问题
 
-在园区检索组件的集成测试中发现图标点击切换后会导致页面卡住，后面经过排除测出只有Windows7的IE上面才会出现这种情况，再一层层排查发现是切换图标的时候，svg里面的use切换href时，在Windows7的IE中不支持点击。
+组件单独加上点击事件是触发不了的，需要在svg标签加上$listeners属性（$listeners和$attrs这两个属性是vue2.4新加的，可以使得组件之间跨组件的通信在不依赖 vuex 和事件总线的情况下更加简洁）。
 
-组件单独加上点击事件是触发不了的，需要在svg标签加上$listeners属性（$listeners和$attrs这两个属性是vue2.4新加的，可以使得组件之间跨组件的通信在不依赖 vuex 和事件总线的情况下更加简洁）
+在园区检索组件的集成测试中发现图标点击切换后会导致页面卡住，后面经过排除测出只有Windows7的IE上面才会出现这种情况，再一层层排查发现是切换图标的时候，svg里面的use切换href时，在Windows7的IE中不支持点击。
 
 解决的方法：
 
