@@ -1,0 +1,264 @@
+---
+layout:     post
+title:      "vue组件"
+subtitle:   "vue component"
+date:       2018-01-11
+author:     "Eric"
+header-img: "img/mac.jpg"
+catalog: true
+tags:
+    - vue
+    - component
+---
+
+组件（component）是vue最强大的功能之一，它可以简化每个页面的代码量，一个页面（page）可以由多个组件组装而成，公共的组件，又有利于代码的重用，组件化程度高有利于后期的代码维护。
+
+## 基本用法
+组件也是一个普通的.vue文件，包含`<template>`、`<script>`、`<style>`三部分，和一般的.vue文件没有什么区别。在页面.vue文件中使用，要进行引入并注册：
+```js
+import simple from 'components/simple.vue'
+export default {
+    name: 'app',
+    components: {
+        simpleComponent: simple
+    }
+}
+```
+```html
+<div id="app">
+    <simpleComponent></simpleComponent>
+</div>
+```
+## 组件的数据传递
+组件组装成页面，那就会产生数据传递问题，子组件传递数据到父组件，父组件传递数据到子组件，子组件之间传递数据，这些都是需要我们考虑的。
+### 父组件向子组件传递数据
+在vue中，可以使用props向子组件传递数据。
+
+子组件部分：
+```html
+<template>
+	<header class="header">
+		<div id="logo">{{logo}}</div>
+		<ul class="nav">
+			<li v-for="nav in navs">{{nav.li}}</li>
+		</ul>
+	</header>
+</template>
+```js
+<script>
+	export default {
+		name: 'headerDiv',
+		data(){
+			return {
+				navs: [
+					{li: '主页'},
+					{li: '日志'},
+					{li: '说说'},
+					{li: '主页'},
+					{li: '相册'},
+				]
+			}
+		},
+		props: ['logo']
+	}
+</script>
+```
+在props中添加元素之后，data中就不需要添加该变量了。
+
+父组件部分：
+```html
+<template>
+	<div id="app">
+		<HeaderDiv :logo="logoMsg"></HeaderDiv>
+	</div>
+</template>
+```
+```js
+<script>
+	import HeaderDiv from './components/header'
+	export default {
+		name: 'app',
+		data(){
+			return {
+				logoMsg: 'WiseWrong'
+			}
+		},
+		components: {
+			HeaderDiv
+		}
+	}
+</script>
+```
+这样就能把logoMsg的值传递给子组件了。但是prop是单向绑定的，不应该在子组件内部改变prop。在两种情况下，我们忍不住想修改prop中数据：
+1. prop作为初始值传入后，子组件想把它作为局部数据来用。
+2. prop作为原始数据传入，由子组件处理成其他数据输出。
+
+对这两种情况，正确的方式是：
+1. 定义一个局部变量，并用prop的值初始化它：
+```js
+props: ['initialCounter'],
+data: function(){
+    return {
+        counter: this.initialCounter
+    }
+}
+```
+2. 定义一个计算属性，处理prop的值并返回
+```js
+props: ['size'],
+computed: {
+    normalizedSize: function(){
+        return this.size.trim().toLowerCase()
+    }
+}
+```
+同时可以为prop添加验证规则，传入的数据不符合要求，vue会发出警告，需要用对象的形式来定义prop。而不能用字符串数组。
+```js
+Vue.component('example', {
+  props: {
+    // 基础类型检测 (`null` 指允许任何类型)
+    propA: Number,
+    // 可能是多种类型
+    propB: [String, Number],
+    // 必传且是字符串
+    propC: {
+      type: String,
+      required: true
+    },
+    // 数值且有默认值
+    propD: {
+      type: Number,
+      default: 100
+    },
+    // 数组/对象的默认值应当由一个工厂函数返回
+    propE: {
+      type: Object,
+      default: function () {
+        return { message: 'hello' }
+      }
+    },
+    // 自定义验证函数
+    propF: {
+      validator: function (value) {
+        return value > 10
+      }
+    }
+  }
+})
+```
+如果在一些情况下想对prop进行双向绑定，可以利用`.sync`修饰符，如下代码：
+```js
+<comp :foo.sync="bar"></comp>
+```
+会被扩展为：
+```js
+<comp :foo="bar" @update:foo="val => bar = val"></comp>
+```
+当子组件需要更新 foo 的值时，它需要显式地触发一个更新事件：
+```
+this.$emit('update:foo', newValue)
+```
+除了添加prop，也可以直接在调用子组件的时候，直接加特性，比如加class，会合并到子组件的根元素上。
+### 子组件向父组件传递数据
+子组件可以通过事件传递数据给父组件
+
+子组件部分：
+```html
+<template>
+	<section>
+		<div class="login">
+			<label>
+				<span>用户名：</span>
+				<input v-model="username" @change="setUser" />
+			</label>
+		</div>
+	</section>
+</template>
+```
+```js
+<script>
+	export default {
+		name: 'login',
+		data(){
+			return {
+				username: ''
+			}
+		},
+		methods: {
+			setUser: function(){
+				this.$emit('transferUser', this.username)
+			}
+		}
+	}
+</script>
+```
+当username的值发现变化，就触发change事件，使用$emit来触发事件，transferUser是一个自定义的事件，功能类似于一个中转，this.username将通过这个事件传递给父组件。
+```html
+<template>
+	<div id="app">
+		<LoginDiv @transferUser="getUser"></LoginDiv>
+		<p>用户名为：{{user}}</p>
+	</div>
+</template>
+```
+```js
+<script>
+	import LoginDiv from './components/Login'
+	export default {
+		name: 'app',
+		data(){
+			return {
+				user: ''
+			}
+		},
+		components: {
+			LoginDiv
+		},
+		methods: {
+			getUser(msg){
+				this.user = msg
+			}
+		}
+	}
+</script>
+```
+getUser方法中的参数msg就是从子组件传递过来的参数username
+### 子组件之间传递数据
+Vue没有直接子组件直接传参的方法，处理的方法有两种：
+1. 将需要传递数据的子组件，都合并为一个组件。
+2. 利用状态管理工具Vuex，共享状态。
+## 组件的封装
+通用组件必须具备高性能、低耦合的特性。为了封装这种通用组件，必须注意：
+1. 数据从父组件传入，为了解耦，子组件本身就不能生产数据，即使生产了，也只能在组件内部运作，不能传递出去。
+2. 在父组件处理事件，在通用组件中，通常会需要有各种事件，这些事件的处理方法尽量放到父组件中，通用组件本身只作为一个中转。
+```js
+// 子组件中的方法
+hanleSubmitClick (data){
+    this.$emit('submit', data)
+}
+```
+```html
+<!-- 父组件中处理 -->
+<child-form @submit="parentSubmit"></child-form>
+```
+组件内部的一些交互行为，或者处理的数据只在组件内部传递，就不需要放到父组件处理。
+
+3. 留一个slot，一个通用组件，往往不能完美的适应所有应用场景，所以在封装组件的时候，只需要完成组件80%的功能，剩下20%让父组件通过slot解决。
+![slot](/img/slot.png)
+上面是一个通用组件，在某些场景中，右侧的按钮是 “处理” 和 “委托”。在另外的场景中，按钮需要换成 “查看” 或者 “删除”
+在封装组件的时候，就不用写按钮，只需要在合适的位置留一个 slot，将按钮的位置留出来，然后在父组件写入按钮
+```html
+<!-- 子组件 -->
+<div class="child-button">
+    <slot name="button"></slot>
+</div>
+<!-- 父组件 -->
+<child>
+    <button slot="button">直接处理</button>
+</child>
+```
+开发通用组件的时候，只要不是独立性很高的组件，建议都留一个slot，即使还没想好用来干什么。
+
+4. 不要依赖Vuex，Vuex的设计初衷是用来管理组件状态，虽然可以用来传参，但不推荐，因为Vuex类似于一个全局变量，会一直占用内存。当页面刷新的时候，Vuex会初始化，同时也会丢失编辑过的数据。如果刷新页面时需要保留数据，可以通过url或者sessionstorage保存i,然后ajax请求数据。
+
+5. 合理运用scoped编写css，在编写组件的时候，可以在`<style>`标签中添加 scoped，让标签中的样式只对当前组件生效但是一味的使用 scoped，肯定会产生大量的重复代码所以在开发的时候，应该避免在组件中写样式当全局样式写好之后，再针对每个组件，通过 scoped 属性添加组件样式。

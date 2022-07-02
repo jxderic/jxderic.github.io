@@ -1,0 +1,44 @@
+# Vue CLI 3的使用总结
+
+## 基本概念
+
+### 主要组成部分
+
+1. CLI（@vue/cli）全局安装的npm包，提供`vue`命令，可以通过`vue create`快速创建一个新项目的脚手架，或者直接通过`vue serve`构建新想法的原型，也可以通过`vue ui`通过一套图形化界面管理项目。
+2. CLI服务（@vue/cli-service）开发环境依赖，其构建于webpack和webpack-dev-server之上，包含了：
+   * 加载其他CLI插件的核心服务；
+   * 一个针对绝大部分应用优化过的内部的webpack配置；
+   * 项目内部的`vue-cli-service`命令，提供`serve`、`build`和`inspect`(审查一个 Vue CLI 项目的 webpack config)等命令。
+3. CLI插件 向你的 Vue 项目提供可选功能的 npm 包
+
+### 快速原型开发
+
+你可以使用 `vue serve` 和 `vue build` 命令对单个 `*.vue` 文件进行快速原型开发，不过这需要先额外安装一个全局的扩展：
+
+```javascript
+npm install -g @vue/cli-service-global
+```
+
+`vue build` 也提供了将组件构建成为一个库或一个 Web Components 组件的能力
+
+### Perset
+
+一个 Vue CLI preset 是一个包含创建新项目所需预定义选项和插件的 JSON 对象，让用户无需在命令提示中选择它们。
+
+### 图形化界面创建/管理/运行项目
+
+启动图形化界面：
+
+```
+vue ui
+```
+
+可以通过界面直观的创建项目，管理配置，打包可以直观的看到那块体积比较大等等。
+
+## 项目中使用
+
+项目的框架可以使用海豚脚手架2.0提供的preset来搭建
+
+### 插件
+
+插件主要有三部分组成：安装（npm包管理）、生成器（生产项目中需要的一些文件）、运行时插件（用来调整 webpack 核心配置和注入命令的）。

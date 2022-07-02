@@ -1,0 +1,201 @@
+# Svg在Vue中的使用和问题
+
+## 前言
+
+想到这个主题是因为工作中icon使用的一些不便和前段时间改缺陷遇到的兼容性问题。
+
+## icon的演进史
+
+### 雪碧图
+
+刚开始大部分图标都是用 img 来实现的。渐渐发现一个页面的请求资源中图片 img 占了大部分，所以为了优化有了`image sprite` 就是所谓的雪碧图，就是将多个图片合成一个图片，然后利用 css 的 background-position 定位显示不同的 icon 图标。但这个也有一个很大的痛点，维护困难。每新增一个图标，都需要改动原始图片，还可能不小心出错影响到前面定位好的图片，久而久之你不知道该怎么维护了。
+
+## font库
+
+现在我们用的最多的就是阿里的[iconfont](https://www.iconfont.cn/home/index?spm=a313x.7781069.1998910419.2)，视觉之前一般提供也是iconfont，使用方式大概有三种：unicode、font-class、symbol，我们平时用的最多的应该还是font-class方式，相对于`unicode` 它的修改更加的方便与直观。但这种方式我们平时工作中是否遇到，视觉需要添加或者修改图标时，我们需要重新全部引入，或者分组引入。这时你是否担心视觉会不会之前的图标忘记备份，最后导出有所遗漏，反正我是遇到视觉漏掉的。
+
+而随着我们工作中不用兼容IE9及以下版本之后，而且之前邮件中通知1907项目中图标和缺省图都会使用svg，所以symbol方式成为了主流和推荐的方式。
+
+- 支持多色图标了，不再受单色限制。
+- 支持像字体那样通过font-size,color来调整样式。
+- 支持 ie9+
+- 可利用CSS实现动画。
+- 减少HTTP请求。
+- 矢量，缩放不失真
+- 可以很精细的控制SVG图标的每一部分
+
+这是iconfont官网上面的使用介绍，
+
+**使用方法：**
+第一步：拷贝项目下面生成的symbol代码：
+
+```
+引入 ./iconfont.js
+```
+
+第二步：加入通用css代码（引入一次就行）：
+
+```
+<style type="text/css">
+    .icon {
+       width: 1em; height: 1em;
+       vertical-align: -0.15em;
+       fill: currentColor;
+       overflow: hidden;
+    }
+</style>
+```
+
+第三步：挑选相应图标并获取类名，应用于页面：
+
+```
+<svg class="icon" aria-hidden="true">
+    <use xlink:href="#icon-xxx"></use>
+</svg>
+```
+
+使用svg-icon的好处是我再也不用发送`woff|eot|ttf|` 这些很多个字体库请求了，我所有的svg都可以内联在html内。其实还用到了 `SVG Sprite` 技术。简单的理解就是类 svg 的似雪碧图，它在一个 svg 之中运用 symbol 标示了一个一个的 svg 图标，这样一个页面中我们遇到同样的 svg 就不用重复再画一个了，直接使用`<use xlink:href="#icon-QQ" x="50" y="50" />` 就能使用了
+
+## 封装组件
+
+我们在Vue中使用，当然封装成组件使用会更加优雅。
+
+```
+//components/Icon-svg
+<template>
+  <svg class="svg-icon" aria-hidden="true">
+    <use :xlink:href="iconName"></use>
+  </svg>
+</template>
+
+<script>
+export default {
+  name: 'icon-svg',
+  props: {
+    iconClass: {
+      type: String,
+      required: true
+    }
+  },
+  computed: {
+    iconName() {
+      return `#icon-${this.iconClass}`
+    }
+  }
+}
+</script>
+
+<style>
+.svg-icon {
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.15em;
+  fill: currentColor;
+  overflow: hidden;
+}
+</style>
+```
+
+```
+//引入svg组件
+import IconSvg from '@/components/IconSvg'
+
+//全局注册icon-svg
+Vue.component('icon-svg', IconSvg)
+
+//在代码中使用
+<icon-svg icon-class="password" />
+```
+
+## 进一步改造
+
+现在所有的 `svg-sprite` 都是通过 iconfont 的 `iconfont.js` 生成的。
+
+- 首先它是一段用js来生成svg的代码，所有图标 icon 都很**不直观**。
+  你完全不知道哪个图标名对应什么图标，每次增删改图标只能整体js文件一起替换。
+
+- 其次它也做不到**按需加载**，不能根据我们使用了那些 svg 动态的生成 `svg-sprite`。
+- **自定义性差**，通常导出的svg包含大量的无用信息，例如编辑器源信息、注释等。通常包含其它一些不会影响渲染结果或可以移除的内容。
+- **添加不友善**，如果我有一些自定义的svg图标，该如何和原有的 `iconfont` 整合到一起呢？目前只能将其也上传到 `iconfont` 和原有的图标放在一个项目库中，之后再重新下载，很繁琐。
+
+这里要使用到 [svg-sprite-loader](https://github.com/kisenka/svg-sprite-loader) 这个神器了， 它是一个 webpack loader ，可以将多个 svg 打包成 `svg-sprite` 。
+
+我们发现`vue-cli`默认情况下会使用 `url-loader` 对svg进行处理，会将它放在`/img` 目录下，所以这时候我们引入`svg-sprite-loader` 会引发一些冲突。
+
+```
+//默认`vue-cli` 对svg做的处理，正则匹配后缀名为.svg的文件，匹配成功之后使用 url-loader 进行处理。
+ {
+    test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
+    loader: 'url-loader',
+    options: {
+      limit: 10000,
+      name: utils.assetsPath('img/[name].[hash:7].[ext]')
+    }
+}
+```
+
+解决方案有两种，最简单的就是你可以将 test 的 svg 去掉，这样就不会对svg做处理了，当然这样做是很不友善的。
+
+- 你不能保证你所有的 svg 都是用来当做 icon的，有些真的可能只是用来当做图片资源的。
+- 不能确保你使用的一些第三方类库会使用到 svg。
+
+所以最安全合理的做法是使用 webpack 的 [exclude](https://webpack.js.org/configuration/module/#rule-exclude) 和 [include](https://webpack.js.org/configuration/module/#rule-include) ，让`svg-sprite-loader`只处理你指定文件夹下面的 svg，`url-loaer`只处理除此文件夹之外的所有 svg，这样就完美解决了之前冲突的问题。
+
+这样配置好了，只要引入svg之后填写类名就可以了，但我们使用不可能每用一个就引入一个，需要下面的自动导入来管理svg。
+
+```
+import '@/src/icons/qq.svg; //引入图标
+
+<svg><use xlink:href="#qq" /></svg>  //使用图标
+```
+
+## 自动导入
+
+首先我们创建一个专门放置图标 icon 的文件夹如：`@/src/icons`，将所有 icon 放在这个文件夹下。
+之后我们就要使用到 webpack 的 [require.context](https://webpack.js.org/guides/dependency-management/#require-context)。很多人对于 `require.context`可能比较陌生，直白的解释就是
+
+> require.context("./test", false, /.test.js$/);
+> 这行代码就会去 test 文件夹（不包含子目录）下面的找所有文件名以 `.test.js` 结尾的文件能被 require 的文件。
+> 更直白的说就是 我们可以通过正则匹配引入相应的文件模块。
+
+require.context有三个参数：
+
+- directory：说明需要检索的目录
+- useSubdirectories：是否检索子目录
+- regExp: 匹配文件的正则表达式
+
+了解这些之后，我们就可以这样写来自动引入 `@/src/icons` 下面所有的图标了
+
+```
+const requireAll = requireContext => requireContext.keys().map(requireContext)
+const req = require.context('./svg', false, /\.svg$/)
+requireAll(req)
+```
+
+之后我们增删改图标直接直接文件夹下对应的图标就好了，什么都不用管，就会自动生成 `svg symbol`了。
+
+## 进一步优化自己的svg
+
+打开svg文件，你会发现还是有很多无用的信息，造成了不必要的冗余。就连 iconfont 网站导出的 svg 都这样，更不用说那些更在意 ui漂不漂亮不懂技术的设计师了(可能)导出的svg了。好在 `svg-sprite-loader`也考虑到了这点，它目前只会获取 svg 中 path 的内容，而其它的信息一概不会获取。但任何你在 path 中产生的冗余信息它就不会做处理了。如注释什么的。
+
+可以用[svgo](https://github.com/svg/svgo)进行优化处理
+
+```
+npm install -g svgo
+svgo -f 文件夹目录
+```
+
+## 遇到的问题
+
+组件单独加上点击事件是触发不了的，需要在svg标签加上$listeners属性（$listeners和$attrs这两个属性是vue2.4新加的，可以使得组件之间跨组件的通信在不依赖 vuex 和事件总线的情况下更加简洁）。
+
+在园区检索组件的集成测试中发现图标点击切换后会导致页面卡住，后面经过排除测出只有Windows7的IE上面才会出现这种情况，再一层层排查发现是切换图标的时候，svg里面的use切换href时，在Windows7的IE中不支持点击。
+
+解决的方法：
+
+```
+svg use{
+    pointer-events: none; // 穿透点击，使use不被点击
+}
+```
+

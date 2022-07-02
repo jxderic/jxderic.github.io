@@ -1,0 +1,274 @@
+# 前端开发规范：命名规范、html规范、css规范、js规范
+## 命名
+### 驼峰式命名法介绍
+* Pascal Case 大驼峰式命名法：首字母大写。eg：StudentInfo、UserInfo、ProductInfo
+* Camel Case 小驼峰式命名法：首字母小写。eg：studentInfo、userInfo、productInfo
+
+### 文件资源命名
+* 文件名不得含有空格
+* 文件名建议只使用小写字母，不使用大写字母。( 为了醒目，某些说明文件的文件名，可以使用大写字母，比如README、LICENSE。 )
+* 文件名包含多个单词时，单词之间建议使用半角的连词线 ( - ) 分隔。
+* 引入资源使用相对路径，不要指定资源所带的具体协议 ( http:,https: ) ，除非这两者协议都不可用。
+
+不推荐：
+```
+<script src="http://cdn.com/foundation.min.js"></script>
+```
+推荐
+```
+<script src="//cdn.com/foundation.min.js"></script>
+```
+### 变量命名
+**命名方式**：小驼峰式命名方法<br/>
+**命名规范**：类型+对象描述的方式，如果没有明确的类型，就可以使前缀为名词
+
+推荐
+```
+var tableTitle = "LoginTable"
+```
+不推荐
+```
+var getTitle = "LoginTable"
+```
+### 函数
+**命名方式**：小驼峰方式 ( 构造函数使用大驼峰命名法 )<br/>
+**命名规则**：前缀为动词
+
+|动词|含义|返回值|
+|--|--|--|
+|can|判断是否可执行某个动作 ( 权限 )|函数返回一个布尔值。true：可执行；false：不可执行|
+|has|	判断是否含有某个值	|函数返回一个布尔值。true：含有此值；false：不含有此值|
+|is	|判断是否为某个值	|函数返回一个布尔值。true：为某个值；false：不为某个值|
+|get	|获取某个值|	函数返回一个非布尔值|
+|set	|设置某个值	|无返回值、返回是否设置成功或者返回链式对象|
+
+推荐：
+```
+//是否可阅读
+function canRead(){
+    return true;
+}
+
+//获取姓名
+function getName{
+    return this.name
+}
+```
+### 常量
+**命名方式**：全部大写<br/>
+**命名规则**：使用大写字母和下划线来组合命名，下划线用以分割单词。
+
+推荐：
+```
+ var MAX_COUNT = 10;
+ var URL = 'http://www.baidu.com';
+```
+### 类的成员
+* 公共属性和方法 : 同变量命名方式
+* 私有属性和方法 : 前缀为下划线(_)后面跟公共属性和方法一样的命名方式
+
+```
+function Student(name) {
+    var _name = name; // 私有成员
+
+    // 公共方法
+    this.getName = function () {
+        return _name;
+    }
+
+    // 公共方式
+    this.setName = function (value) {
+        _name = value;
+    }
+}
+var st = new Student('tom');
+st.setName('jerry');
+console.log(st.getName()); // => jerry：输出_name私有变量的值
+```
+## 注释规范
+### 单行注释 ( // )
+* 单独一行：//(双斜线)与注释文字之间保留一个空格
+* 在代码后面添加注释：//(双斜线)与代码之间保留一个空格，并且//(双斜线)与注释文字之间保留一个空格。
+* 注释代码：//(双斜线)与代码之间保留一个空格。
+
+推荐 :
+```
+// 调用了一个函数；1)单独在一行
+setTitle();
+
+var maxCount = 10; // 设置最大量；2)在代码后面注释
+
+// setName(); // 3)注释代码
+```
+### 多行注释 ( / 注释说明 / )
+* 若开始(/*和结束(*/)都在一行，推荐采用单行注释
+* 若至少三行注释时，第一行为/*，最后行为*/，其他行以*开始，并且注释文字与*保留一个空格。
+  
+推荐 :
+```
+/*
+* 代码执行到这里后会调用setTitle()函数
+* setTitle()：设置title的值
+*/
+setTitle();
+```
+### 函数 ( 方法 ) 注释
+函数(方法)注释也是多行注释的一种，但是包含了特殊的注释要求，参照 [javadoc(百度百科)](https://baike.baidu.com/item/javadoc)
+语法：
+```
+/** 
+* 函数说明 
+* @关键字 
+*/
+```
+常用注释关键字
+
+|注释名|语法|含义|示例|
+|--|--|--|--|
+|@param|@param 参数名 {参数类型}  描述信息|描述参数的信息|@param name {String} 传入名称|
+|@return|@return {返回类型} 描述信息|描述返回值的信息|@return {Boolean} true:可执行;false:不可执行
+|@author|@author 作者信息 [附属信息：如邮箱、日期]|描述此函数作者的信息|@author 张三 2015/07/21 
+|@version|@version XX.XX.XX|描述此函数的版本号|@version 1.0.3
+|@example|@example 示例代码|@example setTitle('测试')|如下
+推荐 :
+```
+/**
+ - 合并Grid的行
+ - @param grid {Ext.Grid.Panel} 需要合并的Grid
+ - @param cols {Array} 需要合并列的Index(序号)数组；从0开始计数，序号也包含。
+ - @param isAllSome {Boolean} ：是否2个tr的cols必须完成一样才能进行合并。true：完成一样；false(默认)：不完全一样
+ - @return void
+ - @author polk6 2015/07/21 
+ - @example
+ - _________________                             _________________
+ - |  年龄 |  姓名 |                             |  年龄 |  姓名 |
+ - -----------------      mergeCells(grid,[0])   -----------------
+ - |  18   |  张三 |              =>             |       |  张三 |
+ - -----------------                             -  18   ---------
+ - |  18   |  王五 |                             |       |  王五 |
+ - -----------------                             -----------------
+*/
+function mergeCells(grid, cols, isAllSome) {
+    // Do Something
+}
+```
+## HTML规范
+### 文档规范
+使用 HTML5 的文档声明类型 : `<!DOCTYPE html>`
+* DOCTYPE标签是一种标准通用标记语言的文档类型声明，它的目的是要告诉标准通用标记语言解析器，它应该使用什么样的文档类型定义（DTD）来解析文档。
+* 使用文档声明类型的作用是为了防止开启浏览器的怪异模式。
+* 没有DOCTYPE文档类型声明会开启浏览器的怪异模式，浏览器会按照自己的解析方式渲染页面，在不同的浏览器下面会有不同的样式。
+* 如果你的页面添加了<!DOCTYP>那么，那么就等同于开启了标准模式。浏览器会按照W3C标准解析渲染页面。
+
+### 语义化
+我们一直都在说语义化编程，语义化编程，但是在代码中很少有人完全使用正确的元素。使用语义化标签也是有理由SEO的。
+> 语义化是指：根据元素其被创造出来时的初始意义来使用它。
+> 意思就是用正确的标签干正确的事，而不是只有div和span。
+
+推荐：
+```
+html 代码:
+<!-- The page header should go into a header element -->
+<header>
+  <!-- As this title belongs to the page structure it's a heading and h1 should be used -->
+  <h1>My page title</h1>
+</header>
+
+<!-- All navigation should go into a nav element -->
+<nav class="top-navigation">
+  <!-- A listing of elements should always go to UL (OL for ordered listings) -->
+  <ul>
+    <li class="nav-item"><a href="#home">Home</a></li>
+    <li class="nav-item"><a href="#news">News</a></li>
+    <li class="nav-item"><a href="#about">About</a></li>
+  </ul>
+</nav>
+
+<!-- The main part of the page should go into a main element (also use role="main" for accessibility) -->
+<main class="news-page" role="main">
+  <!-- A section of a page should go into a section element. Divide a page into sections with semantic elements. -->
+  <section class="page-section news">
+    <!-- A section header should go into a section element -->
+    <header>
+      <!-- As a page section belongs to the page structure heading elements should be used (in this case h2) -->
+      <h2 class="title">All news articles</h2>
+    </header>
+
+    <!-- If a section / module can be seen as an article (news article, blog entry, products teaser, any other
+     re-usable module / section that can occur multiple times on a page) a article element should be used -->
+    <article class="news-article">
+      <!-- An article can contain a header that contains the summary / introduction information of the article -->
+      <header>
+        <!-- As a article title does not belong to the overall page structure there should not be any heading tag! -->
+        <div class="article-title">Good article</div>
+        <!-- Small can optionally be used to reduce importance -->
+        <small class="intro">Introduction sub-title</small>
+      </header>
+
+      <!-- For the main content in a section or article there is no semantic element -->
+      <div class="content">
+        <p>This is a good example for HTML semantics</p>
+      </div>
+      <!-- For content that is represented as side note or less important information in a given context use aside -->
+      <aside class="article-side-notes">
+        <p>I think I'm more on the side and should not receive the main credits</p>
+      </aside>
+      <!-- Articles can also contain footers. If you have footnotes for an article place them into a footer element -->
+      <footer class="article-foot-notes">
+        <!-- The time element can be used to annotate a timestamp. Use the datetime attribute to specify ISO time
+         while the actual text in the time element can also be more human readable / relative -->
+        <p>This article was created by David <time datetime="2014-01-01 00:00" class="time">1 month ago</time></p>
+      </footer>
+    </article>
+
+    <!-- In a section, footnotes or similar information can also go into a footer element -->
+    <footer class="section-footer">
+      <p>Related sections: Events, Public holidays</p>
+    </footer>
+  </section>
+</main>
+
+<!-- Your page footer should go into a global footer element -->
+<footer class="page-footer">
+  Copyright 2014
+</footer>
+```
+### alt标签不为空
+`<img>`标签的 alt 属性指定了替代文本，用于在图像无法显示或者用户禁用图像显示时，代替图像显示在浏览器中的内容。
+
+假设由于下列原因用户无法查看图像，alt 属性可以为图像提供替代的信息：
+* 网速太慢
+* src 属性中的错误
+* 浏览器禁用图像
+* 用户使用的是屏幕阅读器
+
+从SEO角度考虑，浏览器的爬虫爬不到图片的内容，所以我们要有文字告诉爬虫图片的内容
+## js规范
+### 避免全局命名空间污染
+防止全局命名空间被污染，我们通常的做法是将代码包裹成一个 IIFE(Immediately-Invoked Function Expression)，创建独立隔绝的定义域。也使得内存在执行完后立即释放。
+
+IIFE 还可确保你的代码不会轻易被其它全局命名空间里的代码所修改（i.e. 第三方库，window 引用，被覆盖的未定义的关键字等等）。
+推荐
+```
+// We declare a IIFE and pass parameters into the function that we will use from the global space
+(function(log, w, undefined){
+  'use strict';
+
+  var x = 10,
+      y = 100;
+
+  // Will output 'true true'
+  log((w.x === undefined) + ' ' + (w.y === undefined));
+
+}(window.console.log, window));
+```
+如果你想引用全局变量或者是外层 IIFE 的变量，可以通过下列方式传参：
+```
+(function($, w, d){
+  'use strict';
+
+  $(function() {
+    w.alert(d.querySelectorAll('div').length);
+  });
+}(jQuery, window, document));
+```

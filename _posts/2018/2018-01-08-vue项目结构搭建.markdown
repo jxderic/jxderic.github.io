@@ -1,0 +1,122 @@
+---
+layout:     post
+title:      "vue项目结构搭建"
+subtitle:   "vue structure"
+date:       2018-01-08
+author:     "Eric"
+header-img: "img/mac.jpg"
+catalog: true
+tags:
+    - vue
+    - vue-cli
+---
+
+本章我们介绍一下怎么搭建vue的项目结构，利用[vue-cli](https://github.com/vuejs/vue-cli)可以快速搭建vue项目。
+
+## 安装vue-cli
+
+首先需要安装node，这里就不细讲了，全局安装vue-cli:
+
+```
+npm install vue-cli -g
+```
+
+这种安装速度一般比较慢，可以利用淘宝镜像替换npm为cnpm:
+
+```
+npm install -g cnpm --registry=https://registry.npm.taobao.org
+```
+这样就能用cnpm安装模块，速度比较快，安装vue-cli变为：
+```
+cnpm i vue-cli -g
+```
+
+## 生成项目
+
+vue-cli可以生成各种模板的项目结构，我们项目中一般用webpack模板，输入：
+```
+vue init webpack vue-project
+```
+更多模块信息可以查看[https://github.com/vuejs-templates](https://github.com/vuejs-templates)。
+
+这样整体的项目结构就生成了，如下：
+```
+├── build/                      # webpack config files
+│   └── ...
+├── config/
+│   ├── index.js                # main project config
+│   └── ...
+├── src/
+│   ├── main.js                 # app entry file
+│   ├── App.vue                 # main app component
+│   ├── components/             # ui components
+│   │   └── ...
+│   └── assets/                 # module assets (processed by webpack)
+│       └── ...
+├── static/                     # pure static assets (directly copied)
+├── test/
+│   └── unit/                   # unit tests
+│   │   ├── specs/              # test spec files
+│   │   ├── eslintrc            # config file for eslint with extra settings only for unit tests
+│   │   ├── index.js            # test build entry file
+│   │   ├── jest.conf.js        # Config file when using Jest for unit tests
+│   │   └── karma.conf.js       # test runner config file when using Karma for unit tests
+│   │   ├── setup.js            # file that runs before Jest runs your unit tests
+│   └── e2e/                    # e2e tests
+│   │   ├── specs/              # test spec files
+│   │   ├── custom-assertions/  # custom assertions for e2e tests
+│   │   ├── runner.js           # test runner script
+│   │   └── nightwatch.conf.js  # test runner config file
+├── .babelrc                    # babel config
+├── .editorconfig               # indentation, spaces/tabs and similar settings for your editor
+├── .eslintrc.js                # eslint config
+├── .eslintignore               # eslint ignore rules
+├── .gitignore                  # sensible defaults for gitignore
+├── .postcssrc.js               # postcss config
+├── index.html                  # index.html template
+├── package.json                # build scripts and dependencies
+└── README.md                   # Default README file
+```
+
+结构目录生成以后最好修改一下配置文件config>index.js
+
+<img src="/img/config.png" alt="config" title="config" width="600" height="600" />
+
+建议把端口号改为不常用的端口，另外我还将 build 的路径前缀修改为 ' ./ '（原本为 ' / '），是因为打包之后，外部引入 js 和 css 文件时，如果路径以 ' / ' 开头，在本地是无法找到对应文件的（服务器上没问题）。所以如果需要在本地打开打包后的文件，就得修改文件路径。
+
+## 添加目录
+
+vue-cli搭建好目录后，我们还会根据自己的需求来添加功能目录，下面就本项目添加的功能目录做个阐述说明。
+
+我们为了能够统一管理各个模块的接口，利用[easy-mock](https://www.easy-mock.com)的API自动生成工具[Easy Mock CLI](https://easy-mock.github.io/easy-mock-cli/#/)，在项目根目录下创建一份名为`.easy-mock.js`的配置文件：
+```js
+// .easy-mock.js
+module.exports = {
+  output: "api", // 产出到项目下的 api 目录，不用手动创建
+  template: "axios", // 基于 easy-mock-templates 提供的 axios 模板
+  projects: [
+    {
+      id: "你要创建的 Easy Mock 项目的 id", // 例：58fef6ac5e43ae5dbea5eb53
+      name: "demo" // 该项目下的 API 生成之后会被放到 api/demo 目录下
+    }
+  ]
+};
+```
+然后执行如下命令就能自动在默认路径（配置文件可以自定义）下生成api目录。
+```
+easymock init
+```
+其他的功能，比如vuex可以根据项目需要单独安装模块，添加目录。项目结构搭建完成，就可以在本地运行项目进行开发工作：
+```
+npm run dev
+```
+
+## 打包上线
+
+项目开发完成之后，可以输入如下命令进行打包：
+```
+npm run build
+```
+打包完成后会生成dist文件夹，只需要把dist文件夹里面的文件放到服务器就可以了。
+
+

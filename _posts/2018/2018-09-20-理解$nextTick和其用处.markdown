@@ -1,0 +1,48 @@
+## 理解Vue的双向绑定原理
+
+Vue的双向绑定最重要的原理就是通过[Object.defineProperty](https://blog.csdn.net/u011277123/article/details/58597638)把data对象的属性全部转为getter/setter。每个组件实例都有相应的watcher实例对象，它会在组件渲染的过程中把属性记录为依赖，之后当依赖的setter被调用时，会通知watcher重新计算，从而致使它关联的组件得以更新。
+
+Vue是异步执行DOM更新，观察到数据变化，Vue将开启一个队列，并缓冲在同一个事件循环中发生的所有数据改变，在下一个的事件循环“Tick”中，Vue才更新DOM。
+
+例如，当你设置 vm.someData = ‘new value’ ，该组件不会立即重新渲染。
+
+## nextTick的用处
+项目中有时会有需要在更新DOM之后进行一些操作的场景，比如异步获取数据后的轮播，需要操作DOM，这时如果直接在获取数据之后就调用轮播，会是轮播报错或者轮播不正常（速度变快，方向相反等）。这时nextTick就有用处了，vm.$nextTick()实例方法的回调函数可以实现延迟执行，在DOM更新之后执行，带上自己最近项目中在Vue中使用swiper插件的代码。
+
+``` 
+
+this.$nextTick(function() {
+
+if (this.mySwiper) {         
+  this.mySwiper.destroy(); // 重新请求接口时先销毁轮播 } 
+  this.mySwiper = new Swiper(‘.swiper-container’, { 
+   direction: ‘horizontal’, 
+   slidesPerView: 4, 
+    loop: true, 
+    autoplay: { delay: 10000 }, 
+    observer: true, 
+   observeParents: true 
+}) 
+if (this.attendTotal.length > 4) { 
+   this.mySwiper.autoplay.start(); // 多余4个开始轮播 } 
+else { this.mySwiper.autoplay.stop(); // 少于4个停止轮播 } 
+}) 
+
+```
+
+因为`$nextTick()`返回一个Promise对象，所以可以使用async/await完成相同的事情：
+
+```
+methods: {
+  updateMessage: async function () {
+    this.message = 'updated'
+    console.log(this.$el.textContent) // => '未更新'
+    await this.$nextTick()
+    console.log(this.$el.textContent) // => '已更新'
+  }
+}
+```
+
+**参考文章** 
+
+> [深入响应式原理](https://cn.vuejs.org/v2/guide/reactivity.html#search-query-sidebar) 
