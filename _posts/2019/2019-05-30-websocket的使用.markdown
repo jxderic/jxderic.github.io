@@ -227,7 +227,7 @@ ws.onerror = function () {
 ## 项目中使用的注意事项
 
 1. 项目中有很多地方需要实时更新数据，可以要求后端合并websocket，通过返回消息的字段来区分各个模块的推送数据。
-2. 看板小部件的实时推送数据要求业务后台推送给门户的可视化框架前端，之后由可视化框架前端通过一个统一的WS链接推送，之后根据事件名称分发。事件名称规则为组件标识：消息特征码。具体可以查看[待办消息组件业务接口]([https://git.hikvision.com.cn/users/zhangzhitao/repos/wiportal/browse/tlnc%20%E5%BE%85%E5%8A%9E%E6%B6%88%E6%81%AF%E7%BB%84%E4%BB%B6%E4%B8%9A%E5%8A%A1%E6%8E%A5%E5%8F%A3.md](https://git.hikvision.com.cn/users/zhangzhitao/repos/wiportal/browse/tlnc 待办消息组件业务接口.md))
+2. 看板小部件的实时推送数据要求业务后台推送给门户的可视化框架前端，之后由可视化框架前端通过一个统一的WS链接推送，之后根据事件名称分发。
 
 
 
